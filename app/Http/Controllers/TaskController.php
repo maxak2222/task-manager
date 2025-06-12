@@ -32,27 +32,21 @@ class TaskController extends Controller
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
         ]);
-
         return redirect()->route('tasks.index')->with('success', 'Task created.');
     }
 
-
     public function show(Task $task)
     {
-        // Only assigned user or creator can view
         if ($task->assigned_to !== auth()->id() && $task->user_id !== auth()->id()) {
             abort(403, 'Unauthorized action.');
         }
-
         return view('tasks.show', compact('task'));
     }
     public function edit(Task $task)
     {
-        // Allow only the creator to edit the task
         if ($task->user_id !== auth()->id()) {
             abort(403, 'Unauthorized action.');
         }
-
         $users = User::all();
         return view('tasks.edit', compact('task', 'users'));
     }
@@ -80,11 +74,7 @@ class TaskController extends Controller
         if ($task->user_id !== auth()->id()) {
             abort(403, 'Unauthorized action.');
         }
-
         $task->delete();
-
         return redirect()->route('tasks.index')->with('success', 'Task deleted.');
     }
-
-
 }
